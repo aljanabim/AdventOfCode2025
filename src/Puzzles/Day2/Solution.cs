@@ -13,7 +13,6 @@ public class Solution
     {
         var line = new StreamReader(infile).ReadToEnd();
         Ranges = ParseLine(line);
-
     }
 
     private Range[] ParseLine(string line)
@@ -150,10 +149,6 @@ public class Solution
 
     private bool CheckRepeats(long number, int windowSize, int digitCount)
     {
-        // 12341234  - 8 /2=4 /3 /4=2 /5/6/7 /8=1
-        // 123123123 - 9 /2 /3=3 /4/5/6/7/8 /9=1
-        // 11111 - 5 /2/3/4 /5=1
-
         var digits = number.ToString().ToCharArray();
         // var digits = GetDigits(number, digitCount);
 
