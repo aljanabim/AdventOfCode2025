@@ -13,6 +13,8 @@ var day2Solver = new Puzzles.Day2.Solution("Data/day2_input.txt");
 var day21SolutionBatched = Timing.Measure(day2Solver.SolvePart1Batched);
 var day21SolutionNormal = Timing.Measure(day2Solver.SolvePart1Normal);
 var day21SolutionCached = Timing.Measure(day2Solver.SolvePart1Cached);
+var day22SolutionNormal = Timing.Measure(day2Solver.SolvePart2Normal);
 Console.WriteLine($"Day 2 Part 1 (batched):\t{day21SolutionBatched.result} ({day21SolutionBatched.elapsed.TotalMilliseconds}ms)");
 Console.WriteLine($"Day 2 Part 1 (normal):\t{day21SolutionNormal.result} ({day21SolutionNormal.elapsed.TotalMilliseconds}ms)");
 Console.WriteLine($"Day 2 Part 1 (cached):\t{day21SolutionCached.result} ({day21SolutionCached.elapsed.TotalMilliseconds}ms)");
+Console.WriteLine($"Day 2 Part 2 (normal):\t{day22SolutionNormal.result} ({day22SolutionNormal.elapsed.TotalMilliseconds}ms)");
