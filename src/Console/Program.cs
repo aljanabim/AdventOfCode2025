@@ -15,3 +15,4 @@ var day1Solver = new Puzzles.Day1.Solution();
 
 var day3Solve = new Puzzles.Day3.Solution("Data/day3_input.txt");
 day3Solve.Solve(3, 1);
+day3Solve.Solve(3, 2);

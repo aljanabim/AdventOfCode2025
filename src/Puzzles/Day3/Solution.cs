@@ -1,23 +1,28 @@
 namespace Puzzles.Day3;
 
-public class Solution(string inputFileName) : SolutionBase<int>(inputFileName)
+public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
 {
     internal override void ParseInput()
     {
     }
 
-    public override int SolvePart1()
+    public override long SolvePart1()
     {
         int result = 0;
         foreach (var line in Input)
-        {
-            var (leftDigit, rightDigit) = FindMax(line.ToCharArray());
-            result += 10 * leftDigit + rightDigit;
-        }
+            result += FindLargest2Digits(line.ToCharArray());
         return result;
     }
 
-    private (int leftDigit, int rightDigit) FindMax(char[] numbers)
+    public override long SolvePart2()
+    {
+        long result = 0;
+        foreach (var line in Input)
+            result += FindLargestNDigits(line.ToCharArray(), 12);
+        return result;
+    }
+
+    private int FindLargest2Digits(char[] numbers)
     {
         char leftMaxNum = '0';
         char rightMaxNum = '0';
@@ -37,13 +42,29 @@ public class Solution(string inputFileName) : SolutionBase<int>(inputFileName)
             if (numbers[i] > rightMaxNum)
                 rightMaxNum = numbers[i];
         }
-        return (leftMaxNum - '0', rightMaxNum - '0');
+        return (leftMaxNum - '0') * 10 + rightMaxNum - '0';
     }
 
-    public override int SolvePart2()
+    private long FindLargestNDigits(char[] numbers, int numDigits)
     {
-        return 0;
+        long num = 0;
+        int lastMaxDigitIdx = -1;
+        for (int d = numDigits; d > 0; d--)
+        {
+            char lastMaxDigitNum = '0';
+            for (int i = lastMaxDigitIdx + 1; i < numbers.Length - d + 1; i++)
+            {
+                if (numbers[i] > lastMaxDigitNum)
+                {
+                    lastMaxDigitIdx = i;
+                    lastMaxDigitNum = numbers[i];
+                }
+            }
+            num += (lastMaxDigitNum - '0') * (long)Math.Pow(10, d - 1);
+        }
+        return num;
     }
+
 
 }
 
