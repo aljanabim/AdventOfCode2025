@@ -4,30 +4,67 @@ namespace Puzzles.Day2;
 
 public record Range(long Start, long End);
 
-public class Solution
+public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
 {
-    public Range[] Ranges { get; set; }
+    public Range[] Ranges { get; set; } = [];
     private Dictionary<long, bool> _cache = [];
 
-    public Solution(string infile)
+    internal override void ParseInput()
     {
-        var line = new StreamReader(infile).ReadToEnd();
-        Ranges = ParseLine(line);
-    }
-
-    private Range[] ParseLine(string line)
-    {
-        var rangesRaw = line.Split(',');
-        var output = new Range[rangesRaw.Length];
+        var rangesRaw = Input.First().Split(',');
+        Ranges = new Range[rangesRaw.Length];
         for (int i = 0; i < rangesRaw.Length; i++)
         {
             var range = rangesRaw[i].Trim().Split('-');
-            output[i] = new Range(long.Parse(range[0]), long.Parse(range[1]));
+            Ranges[i] = new Range(long.Parse(range[0]), long.Parse(range[1]));
         }
-        return output;
     }
 
-    // Ensure consistency for batched approach (does not give the same result every time)
+    public override long SolvePart1()
+    {
+        long result = 0;
+
+        foreach (var range in Ranges)
+        {
+            for (long i = range.Start; i < range.End + 1; i++)
+            {
+                int digitCount = CountDigits(i);
+                if (digitCount % 2 != 0) continue;
+                bool firstHalfRepeats = CheckRepeats(i, digitCount / 2, digitCount);
+                if (firstHalfRepeats)
+                {
+                    result += i;
+                }
+            }
+        }
+        return result;
+    }
+
+    public override long SolvePart2()
+    {
+        long result = 0;
+        foreach (var range in Ranges)
+        {
+            for (long i = range.Start; i < range.End + 1; i++)
+            {
+                int digitCount = CountDigits(i);
+                for (int j = 2; j <= digitCount; j++)
+                {
+                    if (digitCount % j != 0) continue;
+                    bool doesRepeat = CheckRepeats(i, digitCount / j, digitCount);
+                    if (doesRepeat)
+                    {
+                        result += i;
+                        break;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+
+    // TODO: Ensure consistency for batched approach (does not give the same result every time)
     public long SolvePart1Batched()
     {
         long result = 0;
@@ -75,26 +112,6 @@ public class Solution
         return result;
     }
 
-    public long SolvePart1Normal()
-    {
-        long result = 0;
-
-        foreach (var range in Ranges)
-        {
-            for (long i = range.Start; i < range.End + 1; i++)
-            {
-                int digitCount = CountDigits(i);
-                if (digitCount % 2 != 0) continue;
-                bool firstHalfRepeats = CheckRepeats(i, digitCount / 2, digitCount);
-                if (firstHalfRepeats)
-                {
-                    result += i;
-                }
-            }
-        }
-        return result;
-    }
-
     public long SolvePart1Cached()
     {
         long result = 0;
@@ -117,30 +134,6 @@ public class Solution
                     _cache[i] = true;
                     _cache[long.Parse(string.Join("", idStr.Reverse()))] = true;
                     result += i;
-                }
-            }
-        }
-        return result;
-    }
-
-
-    public long SolvePart2Normal()
-    {
-        long result = 0;
-        foreach (var range in Ranges)
-        {
-            for (long i = range.Start; i < range.End + 1; i++)
-            {
-                int digitCount = CountDigits(i);
-                for (int j = 2; j <= digitCount; j++)
-                {
-                    if (digitCount % j != 0) continue;
-                    bool doesRepeat = CheckRepeats(i, digitCount / j, digitCount);
-                    if (doesRepeat)
-                    {
-                        result += i;
-                        break;
-                    }
                 }
             }
         }

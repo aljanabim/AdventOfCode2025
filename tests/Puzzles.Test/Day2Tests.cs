@@ -12,7 +12,7 @@ public class Day2Tests
         var solver = new Solution("Data/day2.txt");
 
         // Act
-        var actual = solver.SolvePart1Normal();
+        var actual = solver.SolvePart1();
 
         // Assert
         Assert.Equal(1227775554, actual);
@@ -25,7 +25,7 @@ public class Day2Tests
         var solver = new Solution("Data/day2.txt");
 
         // Act
-        var actual = solver.SolvePart2Normal();
+        var actual = solver.SolvePart2();
 
         // Assert
         Assert.Equal(4174379265, actual);
