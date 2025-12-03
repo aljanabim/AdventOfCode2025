@@ -7,8 +7,11 @@ var day1Solver = new Puzzles.Day1.Solution();
 // Console.WriteLine($"Day 1 Part 2 Naive:\t {day12SolutionNaive.result} ({day12SolutionNaive.elapsed.TotalMilliseconds}ms)");
 // Console.WriteLine($"Day 1 Part 2:      \t {day12Solution.result} ({day12Solution.elapsed.TotalMilliseconds}ms)");
 
-var day2Solver = new Puzzles.Day2.Solution("Data/day2_input.txt");
-day2Solver.Solve(2, 1, day2Solver.SolvePart1Batched, "batched");
-day2Solver.Solve(2, 1, "normal");
-day2Solver.Solve(2, 1, day2Solver.SolvePart1Cached, "cached");
-day2Solver.Solve(2, 2, "normal");
+// var day2Solver = new Puzzles.Day2.Solution("Data/day2_input.txt");
+// day2Solver.Solve(2, 1, day2Solver.SolvePart1Batched, "batched");
+// day2Solver.Solve(2, 1, "normal");
+// day2Solver.Solve(2, 1, day2Solver.SolvePart1Cached, "cached");
+// day2Solver.Solve(2, 2, "normal");
+
+var day3Solve = new Puzzles.Day3.Solution("Data/day3_input.txt");
+day3Solve.Solve(3, 1);
