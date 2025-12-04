@@ -13,6 +13,11 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day2Solver.Solve(2, 1, day2Solver.SolvePart1Cached, "cached");
 // day2Solver.Solve(2, 2, "normal");
 
-var day3Solve = new Puzzles.Day3.Solution("Data/day3_input.txt");
-day3Solve.Solve(3, 1);
-day3Solve.Solve(3, 2);
+// var day3Solver = new Puzzles.Day3.Solution("Data/day3_input.txt");
+// day3Solver.Solve(3, 1);
+// day3Solver.Solve(3, 2);
+
+
+var day4Solver = new Puzzles.Day4.Solution("Data/day4_input.txt");
+day4Solver.Solve(4, 1);
+day4Solver.Solve(4, 2);
