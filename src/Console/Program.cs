@@ -21,3 +21,7 @@ var day1Solver = new Puzzles.Day1.Solution();
 var day4Solver = new Puzzles.Day4.Solution("Data/day4_input.txt");
 day4Solver.Solve(4, 1);
 day4Solver.Solve(4, 2);
+
+var day5Solver = new Puzzles.Day5.Solution("Data/day5_input.txt");
+day5Solver.Solve(5, 1);
+day5Solver.Solve(5, 2);
