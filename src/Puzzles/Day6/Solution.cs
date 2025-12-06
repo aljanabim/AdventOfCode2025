@@ -1,5 +1,3 @@
-using System.Linq;
-using System.Numerics;
 using System.Text;
 
 namespace Puzzles.Day6;
@@ -42,10 +40,7 @@ public class Solution(string inputFileName) : SolutionBase<ulong>(inputFileName)
         }
         ulong sum = 0;
         foreach (var v in results)
-        {
-
             sum += v;
-        }
 
         return sum;
     }
@@ -55,7 +50,6 @@ public class Solution(string inputFileName) : SolutionBase<ulong>(inputFileName)
         ulong total = 0;
         var opLine = Input.Last();
         Operation op = Operation.Add;
-
 
         ulong subtotal = 0;
         for (int i = 0; i <= opLine.Length; i++)
@@ -88,19 +82,6 @@ public class Solution(string inputFileName) : SolutionBase<ulong>(inputFileName)
                 subtotal *= ulong.Parse(numStr.ToString());
         }
         return total;
-    }
-
-    private char[,] convertInputToArray()
-    {
-        var output = new char[Input.Length, Input.Last().Length];
-        for (int row = 0; row < Input.Length - 1; row++)
-        {
-            for (int col = 0; col < Input.Last().Length; col++)
-            {
-                output[row, col] = Input[row][col];
-            }
-        }
-        return output;
     }
 
     internal override void ParseInput()
