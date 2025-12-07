@@ -28,7 +28,9 @@ public abstract class SolutionBase<TSolution>
         var result = Timing.Measure(solver);
         var fullSolverName = solverName == null ? "" : $" ({solverName})";
 
-        Console.WriteLine($"Day {day} Part {part}{fullSolverName}:\t{result.result} ({result.elapsed.TotalMilliseconds}ms)");
+        var elapsed = result.elapsed.TotalMilliseconds < 0 ? $"{result.elapsed.TotalMilliseconds}ms" : $"{result.elapsed.TotalMicroseconds}µs";
+
+        Console.WriteLine($"Day {day} Part {part}{fullSolverName}:\t{result.result} ({elapsed})");
     }
     public virtual void Solve(int day, int part, string? solverName = null)
     {
