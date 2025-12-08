@@ -29,3 +29,7 @@ var day1Solver = new Puzzles.Day1.Solution();
 var day6Solver = new Puzzles.Day6.Solution("Data/day6_input.txt");
 day6Solver.Solve(6, 1);
 day6Solver.Solve(6, 2);
+
+var day7Solver = new Puzzles.Day7.Solution("Data/day7_input.txt");
+day7Solver.Solve(7, 1);
+day7Solver.Solve(7, 2);
