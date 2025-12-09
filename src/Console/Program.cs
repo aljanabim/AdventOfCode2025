@@ -34,5 +34,10 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day7Solver.Solve(7, 1);
 // day7Solver.Solve(7, 2);
 
-var day8Solver = new Puzzles.Day8.Solution("Data/day8.txt");
-day8Solver.Solve(8, 1);
+// var day8Solver = new Puzzles.Day8.Solution("Data/day8.txt");
+// day8Solver.Solve(8, 1);
+
+var day9Solver = new Puzzles.Day9.Solution("Data/day9_input.txt");
+day9Solver.Solve(9, 1, "Corner finder");
+day9Solver.Solve(9, 1, day9Solver.SolvePart1DoubleLoop, "Double Loop");
+// day9Solver.Solve(9, 2);
