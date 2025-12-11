@@ -10,4 +10,8 @@
     <ProjectReference Include="../Utils/Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ScottPlot" Version="5.1.57" />
+  </ItemGroup>
+
 </Project>

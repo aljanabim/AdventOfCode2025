@@ -484,4 +484,4 @@ $RECYCLE.BIN/
 *.swp
 
 # Exclude all input files
-*_input.txt
+**/Console/Data

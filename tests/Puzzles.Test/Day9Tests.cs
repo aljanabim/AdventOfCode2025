@@ -25,7 +25,7 @@ public class Day9Tests
         // When
         var actual = solver.SolvePart2();
         // Then
-        Assert.Equal((ulong)0, actual);
+        Assert.Equal((ulong)24, actual);
     }
 
 }
