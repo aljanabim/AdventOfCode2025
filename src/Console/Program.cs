@@ -37,7 +37,7 @@ var day1Solver = new Puzzles.Day1.Solution();
 // var day8Solver = new Puzzles.Day8.Solution("Data/day8.txt");
 // day8Solver.Solve(8, 1);
 
-var day9Solver = new Puzzles.Day9.Solution("Data/day9_input.txt", false);
+var day9Solver = new Puzzles.Day9.Solution("Data/day9_input.txt", false, plot: false);
 // day9Solver.Plot("Data/day9_test_input");
 // day9Solver.Plot("Data/day9_full_input");
 day9Solver.Solve(9, 1, "Corner finder");

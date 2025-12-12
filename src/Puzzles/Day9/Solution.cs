@@ -3,6 +3,14 @@ using ScottPlot;
 
 namespace Puzzles.Day9;
 
+enum Satisfaction
+{
+    None,
+    Horizontal,
+    Vertical,
+    Both
+}
+
 internal record Position(int X, int Y)
 {
     public ulong Area(Position p)
@@ -20,11 +28,72 @@ internal record Position(int X, int Y)
     }
 }
 
-public class Solution(string inputFileName, bool debug = false) : SolutionBase<ulong>(inputFileName)
+internal class Constraint(Position position, bool horizontalGeq, bool verticalGeq)
+{
+    public Position Position { get; } = position;
+    public int VerticalDir { get; } = verticalGeq ? 1 : -1;
+    public int HorizontalDir { get; } = horizontalGeq ? 1 : -1;
+    public List<Constraint> Adjacent = [];
+
+
+    public Satisfaction Check(Position point)
+    {
+        var horzSatisfied = false;
+        var vertSatisfied = false;
+        if (horizontalGeq && Position.X <= point.X || !horizontalGeq && Position.X >= point.X)
+        {
+            horzSatisfied = true;
+        }
+        if (verticalGeq && Position.Y <= point.Y || !verticalGeq && Position.Y >= point.Y)
+        {
+            vertSatisfied = true;
+        }
+
+        if (horzSatisfied && vertSatisfied)
+            return Satisfaction.Both;
+        if (horzSatisfied)
+            return Satisfaction.Horizontal;
+        if (vertSatisfied)
+            return Satisfaction.Vertical;
+        return Satisfaction.None;
+    }
+
+    public bool PointsOk(Position p1, Position p2)
+    {
+        var cp1 = Check(p1);
+        var cp2 = Check(p2);
+        if (cp1 == Satisfaction.Both || cp2 == Satisfaction.Both || cp1 == cp2)
+            return true;
+
+        if (cp1 == Satisfaction.None)
+        {
+            foreach (var adj in Adjacent)
+            {
+                var cp1Adj = adj.Check(p1);
+                var cp2Adj = adj.Check(p2);
+                if (cp1Adj != Satisfaction.None && (cp2Adj == Satisfaction.Both || cp1Adj == cp2Adj))
+                    return true;
+            }
+        }
+        if (cp2 == Satisfaction.None)
+        {
+            foreach (var adj in Adjacent)
+            {
+                var cp1Adj = adj.Check(p1);
+                var cp2Adj = adj.Check(p2);
+                if (cp2Adj != Satisfaction.None && (cp1Adj == Satisfaction.Both || cp1Adj == cp2Adj))
+                    return true;
+            }
+        }
+        return false;
+    }
+}
+
+
+public class Solution(string inputFileName, bool debug = false, bool plot = false) : SolutionBase<ulong>(inputFileName)
 {
     public bool Debug { get; set; } = debug;
     List<Position> tiles = [];
-    // Vector2[] tileVecs = [];
 
     public override ulong SolvePart1()
     {
@@ -66,89 +135,7 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<u
         return maxArea;
     }
 
-    // delegate bool Check(Position point);
 
-    enum Satisfaction
-    {
-        None,
-        Horizontal,
-        Vertical,
-        Both
-    }
-
-    private class Constraint(Position position, bool horizontalGeq, bool verticalGeq)
-    {
-        public Position Position { get; } = position;
-
-        public Satisfaction Check(Position point)
-        {
-            var horzSatisfied = false;
-            var vertSatisfied = false;
-            if (horizontalGeq && Position.X <= point.X || !horizontalGeq && Position.X >= point.X)
-                horzSatisfied = true;
-            if (verticalGeq && Position.Y <= point.Y || !verticalGeq && Position.Y >= point.Y)
-                vertSatisfied = true;
-
-            if (horzSatisfied && vertSatisfied)
-                return Satisfaction.Both;
-            if (horzSatisfied)
-                return Satisfaction.Horizontal;
-            if (vertSatisfied)
-                return Satisfaction.Vertical;
-            // throw new Exception($"None satisfied for {point} with constraint at {Position}");
-            return Satisfaction.None;
-        }
-
-        public bool PointsOk(Position p1, Position p2)
-        {
-            var cp1 = Check(p1);
-            var cp2 = Check(p2);
-            if (cp1 == Satisfaction.Both || cp2 == Satisfaction.Both || cp1 == cp2)
-                return true;
-
-            if (cp1 == Satisfaction.None || cp2 == Satisfaction.None)
-            {
-                var xCloser = true;
-                var yCloser = false;
-                // if (p1.Distance(p2) < Math.Max(p1.Distance(Position), p2.Distance(Position)))
-                //     return true;
-
-                // if (p1.X > Position.X && )// && p2.X < Position.X)
-                {
-                    // Console.WriteLine($"Naughty points {p1} {p2} {Position}");
-                    // xCloser = true;
-                }
-                if (p1.Y > Position.Y && p2.Y > Position.Y || p1.Y < Position.Y && p2.Y < Position.Y)
-                    return true;
-
-                // yCloser = true;
-
-                if (p1.X >= Position.X && p2.X >= Position.X || p1.X <= Position.X && p2.X <= Position.X)
-                {
-                    xCloser = true;
-
-                    // if (p1.X == 15282 && p1.Y == 82724 || p2.X == 15282 && p2.Y == 17162)
-                    // {
-                    //     Console.WriteLine($"-- {p1} {p2} {Position}");
-                    // }
-                }
-
-                return yCloser && xCloser;
-            }
-
-            // if (cp2 == Satisfaction.None && cp1 != Satisfaction.None)
-            // {
-            //     // Compare distance between points to p1 and constraint 
-            //     if (Math.Abs(p1.X - p2.X) <= Math.Abs(p1.X - Position.X) || Math.Abs(p1.Y - p2.Y) <= Math.Abs(p1.Y - Position.Y))
-            //         return true;
-            // }
-
-            // if (cp1 == Satisfaction.None && cp2 == Satisfaction.None)
-            //     throw new Exception($"Both none {p1} {p2}");
-
-            return false;
-        }
-    }
 
     public override ulong SolvePart2()
     {
@@ -161,6 +148,7 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<u
         var prevLine = Vector2.Create(tiles.First().X - tiles.Last().X, tiles.First().Y - tiles.Last().Y);
         List<Constraint> constraints = [];
         tiles.Add(tiles.First());
+        int lastConstraintNum = -1;
         for (int i = 0; i < tiles.Count - 1; i++)
         {
             var nextLine = Vector2.Create(tiles[i + 1].X - tiles[i].X, tiles[i + 1].Y - tiles[i].Y);
@@ -175,30 +163,41 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<u
                 //     Console.WriteLine($"Rule {tiles[i].Y} {(vertSign > 0 ? "<" : ">")}=Y");
                 //     Console.WriteLine($"");
                 // }
-                constraints.Add(new Constraint(tiles[i], horzSign > 0, vertSign > 0));
+                var newConst = new Constraint(tiles[i], horzSign > 0, vertSign > 0);
+                // When two constraints follow directly assign them as adjacent
+                if (lastConstraintNum + 1 == i && i > 0)
+                {
+                    constraints.Last().Adjacent.Add(newConst);
+                    newConst.Adjacent.Add(constraints.Last());
+                }
+                constraints.Add(newConst);
+                lastConstraintNum = i;
             }
             prevLine = nextLine;
         }
         ulong maxArea = 0;
 
-        var plot = new Plot();
-        var sp1 = plot.Add.Scatter(tiles.Select(t => new Coordinates(t.X, -t.Y)).ToList());
-        sp1.Color = Colors.Blue;
-        sp1.LineWidth = 2;
-        var sp2 = plot.Add.Scatter(tiles.Select(t => new Coordinates(t.X, -t.Y)).First());
-        sp2.Color = Colors.Purple;
-        sp2.MarkerSize = 10;
-
-        foreach (var c in constraints)
-        {
-            var con = plot.Add.Scatter(new Coordinates(c.Position.X, -c.Position.Y));
-            con.Color = Colors.Red;
-            con.MarkerSize = 5;
-
-        }
-
+        var scatterPlot = new Plot(); ;
         var point1 = new Position(0, 0);
         var point2 = new Position(0, 0);
+
+        if (plot)
+        {
+            scatterPlot = new Plot();
+            var sp1 = scatterPlot.Add.Scatter(tiles.Select(t => new Coordinates(t.X, -t.Y)).ToList());
+            sp1.Color = Colors.Blue;
+            sp1.LineWidth = 2;
+            var sp2 = scatterPlot.Add.Scatter(tiles.Select(t => new Coordinates(t.X, -t.Y)).First());
+            sp2.Color = Colors.Purple;
+            sp2.MarkerSize = 10;
+
+            foreach (var c in constraints)
+            {
+                var con = scatterPlot.Add.Scatter(new Coordinates(c.Position.X, -c.Position.Y));
+                con.Color = Colors.Red;
+                con.MarkerSize = 5;
+            }
+        }
 
         for (int i = 0; i < tiles.Count - 1; i++)
         {
@@ -211,10 +210,14 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<u
                     Console.WriteLine($"  P2 {tiles[j]}");
                 foreach (var c in constraints)
                 {
-                    if (Debug)
-                        Console.WriteLine($"    C {c.Position} P1C {c.Check(tiles[i])} P2C {c.Check(tiles[j])} Ok {c.PointsOk(tiles[i], tiles[j])}");
                     if (!c.PointsOk(tiles[i], tiles[j]))
                     {
+                        if (Debug)
+                        {
+                            Console.WriteLine($"    C {c.Position} P1C {c.Check(tiles[i])} P2C {c.Check(tiles[j])} Ok={c.PointsOk(tiles[i], tiles[j])} vertDir {c.VerticalDir} horzDir {c.HorizontalDir}");
+                            if (c.Adjacent.Count > 0)
+                                Console.WriteLine($"    Adj:{c.Adjacent.First().Position} P1C {c.Adjacent.First().Check(tiles[i])} P2C {c.Adjacent.First().Check(tiles[j])} Ok={c.Adjacent.First().PointsOk(tiles[i], tiles[j])} vertDir {c.Adjacent.First().VerticalDir} horzDir {c.Adjacent.First().HorizontalDir}");
+                        }
                         allConstraintsMatch = false;
                         break;
                     }
@@ -224,21 +227,25 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<u
                     var area = tiles[i].Area(tiles[j]);
                     if (Debug)
                         Console.WriteLine($"Matching constraints {tiles[i]} {tiles[j]} A={area}");
-                    if (area > maxArea)
+                    if (area >= maxArea)
                     {
-                        Console.WriteLine($"New max area {tiles[i]} {tiles[j]} A={area}");
                         maxArea = area;
-                        point1 = tiles[i];
-                        point2 = tiles[j];
+                        if (plot)
+                        {
+                            point1 = tiles[i];
+                            point2 = tiles[j];
+                            var opt = scatterPlot.Add.Scatter(new Coordinates[] { new(point1.X, -point1.Y), new(point2.X, -point2.Y) });
+                            opt.Color = Colors.RandomHue(1).First();
+                            opt.MarkerSize = 10;
+                        }
                     }
                 }
 
             }
         }
-        var opt = plot.Add.Scatter(new Coordinates[] { new(point1.X, -point1.Y), new(point2.X, -point2.Y) });
-        opt.Color = Colors.Green;
-        opt.MarkerSize = 10;
-        plot.SavePng($"part2_plot.png", 1500, 1500);
+        if (plot)
+            scatterPlot.SavePng($"Data/part2_plot.png", 1500, 1500);
+
         return maxArea;
     }
 
@@ -268,10 +275,8 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<u
         for (int i = 0; i < Input.Length; i++)
         {
             var values = Input[i].Split(",").Select(int.Parse);
-            // tiles[i] = new Position(-(values.First() - 11), values.Last());
             tiles[i] = new Position(values.First(), values.Last());
         }
-        // tiles.Reverse();
     }
 
 }
