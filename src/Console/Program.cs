@@ -44,5 +44,6 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day9Solver.Solve(9, 1, day9Solver.SolvePart1DoubleLoop, "Double Loop");
 // day9Solver.Solve(9, 2);
 
-var day10Solver = new Puzzles.Day10.Solution("Data/day10.txt");
+var day10Solver = new Puzzles.Day10.Solution("Data/day10_input.txt");
 day10Solver.Solve(10, 1);
+day10Solver.Solve(10, 2);

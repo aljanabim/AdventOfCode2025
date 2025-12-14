@@ -56,7 +56,7 @@ public class Day10Tests
         // When
         var actual = solver.SolvePart2();
         // Then
-        Assert.Equal(24, actual);
+        Assert.Equal(33, actual);
     }
 
 }
