@@ -51,23 +51,11 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<d
     {
         double result = 0;
 
-        // ILSSolver.SetMaxIters(10);
-
-        int i = 0;
         foreach (var line in Input)
         {
-            i++;
             var machine = new Machine(line);
-            // var v = new Vector([1, 3, 0, 3, 1, 2]);
-            ILSSolver.iters = 0;
-            // Console.WriteLine($"{machine.ButtonMatrix}");
-            // Console.WriteLine($"v1: {v} {machine.ButtonMatrix.Multiply(v)}");
             var sol = ILSSolver.Solve(machine.ButtonMatrix, machine.Joltages);
-            // Console.WriteLine($"Optimal solution {sol}");
             result += sol;
-            // Console.WriteLine($"Total iterations {ILSSolver.iters} sol {sol} {sol.Data.Sum()} cost {ILSSolver.ComputeCost(machine.ButtonMatrix, sol, machine.Joltages)}");
-            // Console.WriteLine($"{machine.Joltages} {machine.ButtonMatrix.Multiply(sol)}");
-            // break;
         }
         return result;
     }
