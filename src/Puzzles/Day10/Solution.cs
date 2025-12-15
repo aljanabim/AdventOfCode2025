@@ -49,16 +49,13 @@ public class Solution(string inputFileName, bool debug = false) : SolutionBase<d
 
     public override double SolvePart2()
     {
-        double result = 0;
-
-        foreach (var line in Input)
+        return Input.AsParallel().Select(line =>
         {
             var machine = new Machine(line);
-            var sol = ILSSolver.Solve(machine.ButtonMatrix, machine.Joltages);
-            result += sol;
-        }
-        return result;
+            return ILSSolver.Solve(machine.ButtonMatrix, machine.Joltages);
+        }).Sum();
     }
+
 
     internal override void ParseInput()
     {

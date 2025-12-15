@@ -6,7 +6,6 @@ namespace Puzzles.Day10.Algebra;
 // Integer Least Squares Solves
 public static class ILSSolver
 {
-    private static readonly Solver solver = Solver.CreateSolver("SCIP");
     /*
         Given y \in \mathbb{R}^M
             x \in \mathbb{R}^N
@@ -18,6 +17,7 @@ public static class ILSSolver
     */
     public static double Solve(Matrix A, Vector Y)
     {
+        Solver solver = Solver.CreateSolver("SCIP");
         // Setup variables
         List<Variable> xVars = [.. Enumerable.Range(0, A.Cols).Select(i => solver.MakeIntVar(0, double.PositiveInfinity, $"x{i}"))];
         // Add constraints
