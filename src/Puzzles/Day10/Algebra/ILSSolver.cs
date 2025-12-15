@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Xml.Linq;
+using Google.OrTools.LinearSolver;
 using Puzzles.Day8;
 
 namespace Puzzles.Day10.Algebra;
@@ -9,6 +12,7 @@ public static class ILSSolver
     public static int iters = 0;
     private static Random rng = new Random();
     private static int MaxIters = 100;
+    private static Solver solver = Solver.CreateSolver("SCIP");
 
     public static void SetMaxIters(int n)
     {
@@ -140,31 +144,75 @@ public static class ILSSolver
         // return solution;
     }
 
-    public static Vector Solve(Matrix A, Vector Y)
+    public static double Solve(Matrix A, Vector Y)
     {
-        var sol = new Vector(A.Cols);
+        // var sol = new Vector(A.Cols);
 
-        var currentCost = ComputeCost(A, sol, Y);
-        var newCost = currentCost;
-        var maxInc = Y.Data.Max();
+        // var currentCost = ComputeCost(A, sol, Y);
+        // var newCost = currentCost;
+        // var maxInc = Y.Data.Max();
 
-        var target = new Vector([3, 0, 7]);
-        var mat = new Matrix { Data = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } } };
-        var minSum = maxInc * sol.Size;
-        List<Vector> solutions = [];
-        var tempVec = new Vector([0, 0, 0]);
+        // var target = new Vector([3, 0, 7]);
+        // var mat = new Matrix { Data = new double[,] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } } };
+        // var minSum = maxInc * sol.Size;
+        // List<Vector> solutions = [sol];
+        // var tempVec = new Vector([0, 0, 0]);
         // IterateSolution(solutions, tempVec, ref target, ref mat, 7, 0, ref minSum);
-        IterateSolution(solutions, sol, ref Y, ref A, maxInc, 0, ref minSum);
-        // foreach (var d in solutions)
-        // {
-        //     Console.WriteLine($"Solution {d} #{d.Sum()}");
-        // }
-        // alglib.lsfitreport rep;
+        // IterateSolution(solutions, sol, ref Y, ref A, maxInc, 0, ref minSum);
+
+        /*
+            Given y \in \mathbb{R}^M
+                x \in \mathbb{R}^N
+                A \in \mathbb{R}^{M\times N}
+            minimize sum_{n=0}^N x_n
+            subject to  
+            y_m = sum_{n=0}^N A_{m,n} x_n
+            where m=0,1,...M
+        */
+        // var timer = Stopwatch.StartNew();
+        List<Variable> xVars = [.. Enumerable.Range(0, A.Cols).Select(i => solver.MakeIntVar(0, double.PositiveInfinity, $"x{i}"))];
+        // Add constraints
+        for (int row = 0; row < A.Rows; row++)
+        {
+            LinearExpr? constraints = null;
+            for (int col = 0; col < A.Cols; col++)
+            {
+                if (A.Data[row, col] == 1)
+                {
+                    if (constraints == null)
+                        constraints = xVars[col];
+                    else
+                        constraints += xVars[col];
+                }
+            }
+            if (constraints != null)
+                solver.Add(constraints == Y.Data[row]);
+        }
+        LinearExpr? cost = null;
+        foreach (var x in xVars)
+        {
+            if (cost == null)
+                cost = x;
+            else
+                cost += x;
+        }
+        if (cost != null)
+            solver.Minimize(cost);
+
+        var resultStatus = solver.Solve();
+        if (resultStatus != Solver.ResultStatus.OPTIMAL)
+            throw new Exception($"The problem does not have an optimal solution \n{A}\n{Y}");
+
+        // Console.WriteLine($"Min number {solver.Objective().Value()}");
+        // Console.WriteLine($"Sol={new Vector([.. xVars.Select(x => x.SolutionValue())])}");
+        // timer.Stop();
+        // Console.WriteLine($"Problem solving took {timer.Elapsed.TotalMilliseconds}ms");
 
         // alglib.lsfitlinear(Y.Data, A.Data, out var info, out var sold, out rep);
         // Console.WriteLine($"{new Vector(sold)}, {info}, {rep}");
 
-        return solutions.OrderBy(s => s.Sum()).First();
+        return solver.Objective().Value();
+        // return solutions.First();//.OrderBy(s => s.Sum()).First();
 
         // GenerateDigitGroup(sol.Size).ToList();
 
@@ -256,7 +304,7 @@ public static class ILSSolver
         //     Console.WriteLine($"randomzing new {sol}");
         // }
         // }
-        return sol;
+        // return sol;
     }
 }
 
