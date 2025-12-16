@@ -8,7 +8,7 @@ internal record Vec(double X, double Y, double Z)
     public double X { get; init; } = X;
     public double Y { get; init; } = Y;
     public double Z { get; init; } = Z;
-    public bool Connected { get; set; } = false;
+    public int? CircuitId { get; set; } = null;
 }
 
 internal class Edge(Vec V1, Vec V2)
@@ -21,17 +21,46 @@ internal class Edge(Vec V1, Vec V2)
 public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
 {
 
+    Vec[] vectors = [];
     readonly List<Edge> edges = [];
 
 
     public override long SolvePart1()
     {
-        foreach (var edge in edges)
+        List<int> circuits = [];
+        foreach (var edge in edges.OrderBy(e => e.Distance).Take(1000))
         {
-            edge.V1.Connected = true;
-            Console.WriteLine($"{edge.Distance} \t {edge.V1}");
+            // var edge = edges[i];
+            if (edge.V1.CircuitId == edge.V2.CircuitId && edge.V1.CircuitId != null)
+                continue;
+            else if (edge.V1.CircuitId != null && edge.V2.CircuitId == null)
+            {
+                circuits[(int)edge.V1.CircuitId]++;
+                edge.V2.CircuitId = edge.V1.CircuitId;
+            }
+            else if (edge.V1.CircuitId == null && edge.V2.CircuitId != null)
+            {
+                circuits[(int)edge.V2.CircuitId]++;
+                edge.V1.CircuitId = edge.V2.CircuitId;
+            }
+            else if (edge.V1.CircuitId != null && edge.V2.CircuitId != null)
+            {
+                var minId = edge.V1.CircuitId < edge.V2.CircuitId ? edge.V1.CircuitId : edge.V2.CircuitId;
+                var maxId = edge.V1.CircuitId > edge.V2.CircuitId ? edge.V1.CircuitId : edge.V2.CircuitId;
+                circuits[(int)minId] += circuits[(int)maxId];
+                circuits[(int)maxId] = 0;
+                foreach (var vec in vectors)
+                    if (vec.CircuitId == maxId)
+                        vec.CircuitId = minId;
+            }
+            else
+            {
+                circuits.Add(2);
+                edge.V1.CircuitId = circuits.Count - 1;
+                edge.V2.CircuitId = circuits.Count - 1;
+            }
         }
-        return 0;
+        return circuits.OrderDescending().Take(3).Aggregate((a, b) => a * b);
     }
 
     public override long SolvePart2()
@@ -41,24 +70,23 @@ public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
 
     internal override void ParseInput()
     {
-        var result = Timing.Measure(() =>
+        // var result = Timing.Measure(() =>
+        // {
+        vectors = new Vec[Input.Length];
+
+        for (int i = 0; i < Input.Length; i++)
+            vectors[i] = ParseVecLine(Input[i]);
+
+        for (int i = 0; i < vectors.Length - 1; i++)
         {
-            Vec[] vectors = new Vec[Input.Length];
-
-            for (int i = 0; i < Input.Length; i++)
-                vectors[i] = ParseVecLine(Input[i]);
-
-            for (int i = 0; i < vectors.Length - 1; i++)
+            for (int j = i + 1; j < Input.Length; j++)
             {
-                for (int j = i + 1; j < Input.Length; j++)
-                {
-                    edges.Add(new Edge(vectors[i], vectors[j]));
-                }
+                edges.Add(new Edge(vectors[i], vectors[j]));
             }
-            edges.Sort((a, b) => a.Distance.CompareTo(b.Distance));
-            return true;
-        });
-        Console.WriteLine($"Parsing took {result.elapsed.TotalMilliseconds}ms");
+        }
+        // return true;
+        // });
+        // Console.WriteLine($"Parsing took {result.elapsed.TotalMilliseconds}ms");
     }
 
     static Vec ParseVecLine(string line)

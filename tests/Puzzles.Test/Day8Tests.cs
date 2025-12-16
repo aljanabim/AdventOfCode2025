@@ -9,13 +9,13 @@ public class Day8Tests
     public void TestPart1()
     {
         // Given
-        var solver = new Solution("Data/day7.txt");
+        var solver = new Solution("Data/day8.txt");
 
         // When
         var actual = solver.SolvePart1();
 
         // Then
-        Assert.Equal(21, actual);
+        Assert.Equal(40, actual);
     }
     [Fact]
     public void TestPart2()

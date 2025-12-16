@@ -34,8 +34,8 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day7Solver.Solve(7, 1);
 // day7Solver.Solve(7, 2);
 
-// var day8Solver = new Puzzles.Day8.Solution("Data/day8.txt");
-// day8Solver.Solve(8, 1);
+var day8Solver = new Puzzles.Day8.Solution("Data/day8_input.txt");
+day8Solver.Solve(8, 1);
 
 // var day9Solver = new Puzzles.Day9.Solution("Data/day9_input.txt", false, plot: false);
 // - day9Solver.Plot("Data/day9_test_input");
@@ -44,6 +44,6 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day9Solver.Solve(9, 1, day9Solver.SolvePart1DoubleLoop, "Double Loop");
 // day9Solver.Solve(9, 2);
 
-var day10Solver = new Puzzles.Day10.Solution("Data/day10_input.txt");
-day10Solver.Solve(10, 1);
-day10Solver.Solve(10, 2);
+// var day10Solver = new Puzzles.Day10.Solution("Data/day10_input.txt");
+// day10Solver.Solve(10, 1);
+// day10Solver.Solve(10, 2);
