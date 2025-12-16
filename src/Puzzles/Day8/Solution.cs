@@ -18,19 +18,25 @@ internal class Edge(Vec V1, Vec V2)
     public double Distance { get; } = Math.Sqrt(Math.Pow(V1.X - V2.X, 2) + Math.Pow(V1.Y - V2.Y, 2) + Math.Pow(V1.Z - V2.Z, 2));
 }
 
-public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
+public class Solution(string inputFileName, bool isTestDataSet = false) : SolutionBase<long>(inputFileName)
 {
 
     Vec[] vectors = [];
+    List<int> circuits = [];
     readonly List<Edge> edges = [];
 
 
-    public override long SolvePart1()
+    void Reset()
     {
-        List<int> circuits = [];
-        foreach (var edge in edges.OrderBy(e => e.Distance).Take(1000))
+        foreach (var v in vectors)
+            v.CircuitId = null;
+        circuits = [];
+    }
+
+    IEnumerable<Edge> EdgeIterator(int takeSize)
+    {
+        foreach (var edge in edges.OrderBy(e => e.Distance).Take(takeSize))
         {
-            // var edge = edges[i];
             if (edge.V1.CircuitId == edge.V2.CircuitId && edge.V1.CircuitId != null)
                 continue;
             else if (edge.V1.CircuitId != null && edge.V2.CircuitId == null)
@@ -59,19 +65,34 @@ public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
                 edge.V1.CircuitId = circuits.Count - 1;
                 edge.V2.CircuitId = circuits.Count - 1;
             }
+            yield return edge;
         }
+
+    }
+    public override long SolvePart1()
+    {
+        Reset();
+        if (isTestDataSet)
+            _ = EdgeIterator(10).ToList();
+        else
+            _ = EdgeIterator(1000).ToList();
+
         return circuits.OrderDescending().Take(3).Aggregate((a, b) => a * b);
     }
 
     public override long SolvePart2()
     {
+        Reset();
+        foreach (var edge in EdgeIterator(edges.Count))
+        {
+            if (circuits[0] == vectors.Length)
+                return (long)(edge.V1.X * edge.V2.X);
+        }
         return 0;
     }
 
     internal override void ParseInput()
     {
-        // var result = Timing.Measure(() =>
-        // {
         vectors = new Vec[Input.Length];
 
         for (int i = 0; i < Input.Length; i++)
@@ -84,9 +105,6 @@ public class Solution(string inputFileName) : SolutionBase<long>(inputFileName)
                 edges.Add(new Edge(vectors[i], vectors[j]));
             }
         }
-        // return true;
-        // });
-        // Console.WriteLine($"Parsing took {result.elapsed.TotalMilliseconds}ms");
     }
 
     static Vec ParseVecLine(string line)

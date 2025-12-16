@@ -36,6 +36,7 @@ var day1Solver = new Puzzles.Day1.Solution();
 
 var day8Solver = new Puzzles.Day8.Solution("Data/day8_input.txt");
 day8Solver.Solve(8, 1);
+day8Solver.Solve(8, 2);
 
 // var day9Solver = new Puzzles.Day9.Solution("Data/day9_input.txt", false, plot: false);
 // - day9Solver.Plot("Data/day9_test_input");
