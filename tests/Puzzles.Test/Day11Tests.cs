@@ -12,7 +12,7 @@ public class Day11Tests
 
         var actual = solver.SolvePart1();
 
-        Assert.Equal(0, actual);
+        Assert.Equal(11, actual);
     }
 
     [Fact]
