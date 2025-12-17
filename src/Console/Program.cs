@@ -34,9 +34,9 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day7Solver.Solve(7, 1);
 // day7Solver.Solve(7, 2);
 
-var day8Solver = new Puzzles.Day8.Solution("Data/day8_input.txt");
-day8Solver.Solve(8, 1);
-day8Solver.Solve(8, 2);
+// var day8Solver = new Puzzles.Day8.Solution("Data/day8_input.txt");
+// day8Solver.Solve(8, 1);
+// day8Solver.Solve(8, 2);
 
 // var day9Solver = new Puzzles.Day9.Solution("Data/day9_input.txt", false, plot: false);
 // - day9Solver.Plot("Data/day9_test_input");
@@ -48,3 +48,7 @@ day8Solver.Solve(8, 2);
 // var day10Solver = new Puzzles.Day10.Solution("Data/day10_input.txt");
 // day10Solver.Solve(10, 1);
 // day10Solver.Solve(10, 2);
+
+var day11Solver = new Puzzles.Day11.Solution("Data/day11_input.txt");
+day11Solver.Solve(11, 1);
+day11Solver.Solve(11, 2);
