@@ -12,17 +12,17 @@ public class Day11Tests
 
         var actual = solver.SolvePart1();
 
-        Assert.Equal(11, actual);
+        Assert.Equal(5, actual);
     }
 
     [Fact]
     public void TestPart2()
     {
-        var solver = new Solution("Data/day11.txt");
+        var solver = new Solution("Data/day11_2.txt");
 
         var actual = solver.SolvePart2();
 
-        Assert.Equal(0, actual);
+        Assert.Equal(2, actual);
     }
 }
 

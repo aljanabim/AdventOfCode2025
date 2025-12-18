@@ -49,6 +49,8 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day10Solver.Solve(10, 1);
 // day10Solver.Solve(10, 2);
 
-var day11Solver = new Puzzles.Day11.Solution("Data/day11_input.txt");
-day11Solver.Solve(11, 1);
-// day11Solver.Solve(11, 2);
+var day11Solver = new Puzzles.Day11.Solution("Data/day11_2.txt");
+// day11Solver.Solve(11, 1);
+day11Solver.Solve(11, 2);
+//  38507656575246 too low
+// 123027350631294 too low
