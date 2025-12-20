@@ -49,6 +49,9 @@ var day1Solver = new Puzzles.Day1.Solution();
 // day10Solver.Solve(10, 1);
 // day10Solver.Solve(10, 2);
 
-var day11Solver = new Puzzles.Day11.Solution("Data/day11_input.txt");
-day11Solver.Solve(11, 1);
-day11Solver.Solve(11, 2);
+// var day11Solver = new Puzzles.Day11.Solution("Data/day11_input.txt");
+// day11Solver.Solve(11, 1);
+// day11Solver.Solve(11, 2);
+
+var day12Solver = new Puzzles.Day12.Solution("Data/day12_input.txt");
+day12Solver.Solve(12, 1);
